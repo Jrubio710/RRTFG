@@ -1,13 +1,23 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password
 
 class Employer(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=50)
+    password = models.CharField(max_length=128) # Hash largo para almacenar la contraseña encriptada.
+
+    def save(self, *args, **kwargs):
+        #Encripta la contraseña antes de guardar el modelo(le pongo la linea siguiente por que he hecho esta modificacion con algunas contraseñas ya subidas)
+        #Asegura que la contraseña se encripta solo cuando es necesario.
+        if self.pk is None or 'password' in self.get_dirty_fields():  
+            if not self.password.startswith('pbkdf2_sha256$'):  
+                self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} ({self.email})"
+
 
 class Tire(models.Model):
     id = models.AutoField(primary_key=True)
