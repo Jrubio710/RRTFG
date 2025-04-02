@@ -1,6 +1,6 @@
 # Ignorar archivos de configuración sensibles
-rubioroad/rubioroad/settings.py
-rubioroad/rubioroad/__pycache__/
+rubioroad/settings.py
+rubioroad/__pycache__/
 
 # Ignorar entornos virtuales
 venv/
