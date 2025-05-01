@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RubioRoad | Tienda de Neumáticos</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>RubioRoad</h1>
+            <p>Encuentra los mejores neumáticos para tu vehículo al mejor precio</p>
+            <div class="hero-buttons">
+                <a href="{% url 'tire_list' %}" class="btn btn-primary">Ver Ruedas en Stock</a>
+                <a href="{% url 'admin:index' %}" class="btn btn-secondary">Panel de Administración</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Productos Destacados -->
+        <section class="featured-product">
+            <h2>Productos Destacados</h2>
+            <div class="product-card-container">
+                {% for tire in featured_tires %}
+                <div class="product-card">
+                    <div class="product-info">
+                        <h3>{{ tire.brand }} {{ tire.model }}</h3>
+                        <p>Dimensiones: {{ tire.dimensions }}</p>
+                        <p class="price">€{{ tire.price }}</p>
+                        <a href="{% url 'tire_list' %}" class="btn btn-primary">Ver Detalles</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Testimonios -->
+        <section class="testimonials">
+            <h2>Lo que dicen nuestros clientes</h2>
+            <div class="testimonial-slider">
+                <div class="testimonial active">
+                    <p>“Excelente servicio y gran calidad de neumáticos. ¡Volveré seguro!”</p>
+                    <span class="author">— María G.</span>
+                </div>
+                <div class="testimonial">
+                    <p>“Compré mis neumáticos y llegaron rapidísimo. Muy recomendables.”</p>
+                    <span class="author">— Juan P.</span>
+                </div>
+                <div class="testimonial">
+                    <p>“Precios imbatibles y atención al cliente de 10.”</p>
+                    <span class="author">— Laura R.</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RubioRoad. Todos los derechos reservados.</p>
+    </footer>
+
+<script>
+    (function() {
+      const slides = document.querySelectorAll('.testimonial');
+      let current = 0;
+      const interval = 6000; 
+  
+      function showNext() {
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('active');
+      }
+   
+      window.addEventListener('DOMContentLoaded', () => {
+        slides[current].classList.add('active');
+        setInterval(showNext, interval);
+      });
+    })();
+  </script>
+  
+</body>
+</html>

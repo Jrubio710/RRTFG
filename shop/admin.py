@@ -4,6 +4,10 @@ from .models import Employer, Tire, Client, Sale, Details
 
 print("Archivo admin.py cargado correctamente")
 
+admin.site.site_header = "Rubio Road - Panel de Administración"
+
+
+
 # ------------------ Cliente ------------------
 class ClientAdmin(admin.ModelAdmin):
     search_fields = ['name', 'plate', 'phone']  # Autocompletado por nombre, matrícula o teléfono
@@ -13,7 +17,7 @@ admin.site.register(Client, ClientAdmin)
 
 # ------------------ Detalles ------------------
 class DetailsAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['sale', 'tire']  # 🔁 Activa el autocompletado en relaciones ForeignKey
+    autocomplete_fields = ['sale', 'tire']  # Activa el autocompletado en relaciones ForeignKey
     search_fields = ['sale__client__name', 'tire__model']
     list_display = ('sale', 'tire', 'quantity')
 
@@ -69,16 +73,16 @@ class DetailsInline(admin.TabularInline):
     model = Details
     extra = 1
     fields = ('tire', 'quantity')
-    autocomplete_fields = ['tire']  # 🔁 Esto activa el buscador para los neumáticos
+    autocomplete_fields = ['tire']  # Esto activa el buscador para los neumáticos
 
 
 # ------------------ Ventas ------------------
 class SaleAdmin(admin.ModelAdmin):
     form = SaleForm
-    autocomplete_fields = ['client', 'employer']  # 🔁 Autocompletado para cliente y empleado
+    autocomplete_fields = ['client', 'employer']  # Autocompletado para cliente y empleado
     list_display = ('id', 'client', 'employer', 'date', 'total')
     inlines = [DetailsInline]
-    search_fields = ['client__name', 'client__plate', 'id']  # Necesario por autocomplete en DetailsAdmin
+    search_fields = ['client__name', 'client__plate', 'id']  #Autocomplete en DetailsAdmin
     fieldsets = (
         ("Client Information", {
             'fields': ('client', 'new_client_name', 'new_client_phone', 'new_client_plate')
