@@ -1,39 +1,39 @@
 from django.contrib import admin
 from django import forms
-from django.utils.html import format_html
 from .models import Employer, Tire, Client, Sale, Details
 
 print("Archivo admin.py cargado correctamente")
 
-# Configuración del admin para Cliente
+# ------------------ Cliente ------------------
 class ClientAdmin(admin.ModelAdmin):
-    search_fields = ['name', 'plate'] 
-    list_display = ('name', 'plate')  
+    search_fields = ['name', 'plate', 'phone']  # Autocompletado por nombre, matrícula o teléfono
+    list_display = ('name', 'plate', 'phone')   # Muestra el teléfono también
 
-admin.site.register(Client, ClientAdmin) 
+admin.site.register(Client, ClientAdmin)
 
-# Configuración del admin para Detalles
+# ------------------ Detalles ------------------
 class DetailsAdmin(admin.ModelAdmin):
-    search_fields = ['sale__client__name', 'tire__model'] 
-    list_display = ('sale', 'tire', 'quantity') 
+    autocomplete_fields = ['sale', 'tire']  # 🔁 Activa el autocompletado en relaciones ForeignKey
+    search_fields = ['sale__client__name', 'tire__model']
+    list_display = ('sale', 'tire', 'quantity')
 
+admin.site.register(Details, DetailsAdmin)
 
-
-# Configuración del admin para Neumáticos
+# ------------------ Neumáticos ------------------
 class TireAdmin(admin.ModelAdmin):
     search_fields = ['brand', 'model', 'dimensions']
     list_display = ('brand', 'model', 'dimensions', 'price', 'stock')
 
 admin.site.register(Tire, TireAdmin)
 
-# Configuración del admin para Empleados
+# ------------------ Empleados ------------------
 class EmployerAdmin(admin.ModelAdmin):
     search_fields = ['name', 'email']
     list_display = ('name', 'email')
 
 admin.site.register(Employer, EmployerAdmin)
 
-# FORMULARIO PERSONALIZADO PARA VENTAS
+# ------------------ Formulario personalizado para Ventas ------------------
 class SaleForm(forms.ModelForm):
     new_client_name = forms.CharField(required=False, label="New Client - Name")
     new_client_phone = forms.CharField(required=False, label="Phone")
@@ -42,7 +42,7 @@ class SaleForm(forms.ModelForm):
 
     class Meta:
         model = Sale
-        fields = '__all__' 
+        fields = '__all__'
 
     def clean(self):
         cleaned_data = super().clean()
@@ -60,32 +60,25 @@ class SaleForm(forms.ModelForm):
                 phone=new_phone,
                 plate=new_plate
             )
-            cleaned_data["client"] = new_client 
-        
+            cleaned_data["client"] = new_client
+
         return cleaned_data
 
-
+# ------------------ Inline para detalles de la venta ------------------
 class DetailsInline(admin.TabularInline):
     model = Details
-    extra = 1 
-    fields = ('tire', 'quantity') 
+    extra = 1
+    fields = ('tire', 'quantity')
+    autocomplete_fields = ['tire']  # 🔁 Esto activa el buscador para los neumáticos
 
-    # Restamos el stock y calculamos el subtotal al guardar el modelo
-    def save_model(self, request, obj, form, change):
-        # Calculamos el subtotal (precio * cantidad)
-        obj.subtotal = obj.tire.price * obj.quantity
-        obj.tire.stock -= obj.quantity  
-        obj.tire.save() 
-        super().save_model(request, obj, form, change)
-        
-        # Actualizar total en la venta
-        obj.sale.update_total()
 
-# Configuración del admin para Ventas
+# ------------------ Ventas ------------------
 class SaleAdmin(admin.ModelAdmin):
     form = SaleForm
+    autocomplete_fields = ['client', 'employer']  # 🔁 Autocompletado para cliente y empleado
     list_display = ('id', 'client', 'employer', 'date', 'total')
-    inlines = [DetailsInline]  # Agrega la opción de seleccionar neumáticos
+    inlines = [DetailsInline]
+    search_fields = ['client__name', 'client__plate', 'id']  # Necesario por autocomplete en DetailsAdmin
     fieldsets = (
         ("Client Information", {
             'fields': ('client', 'new_client_name', 'new_client_phone', 'new_client_plate')
@@ -95,5 +88,4 @@ class SaleAdmin(admin.ModelAdmin):
         }),
     )
 
-
-admin.site.register(Sale, SaleAdmin) 
+admin.site.register(Sale, SaleAdmin)
