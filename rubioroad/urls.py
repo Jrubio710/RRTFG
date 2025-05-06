@@ -19,9 +19,8 @@ from django.urls import path
 from shop import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('tires/', views.tire_list, name='tire_list'),
-
-    
+   path('admin/', admin.site.urls),
+   path('',       views.home,         name='home'),
+   path('tires/', views.tire_list,    name='tire_list'),
+   path('reserve/<int:tire_id>/', views.reserve_tire, name='reserve_tire'),
 ]

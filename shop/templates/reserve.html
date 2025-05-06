@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reservar {{ tire.brand }} {{ tire.model }}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  <header>
+    <h1>Reservar {{ tire.brand }} {{ tire.model }}</h1>
+  </header>
+  <main>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.first_name.label_tag }} {{ form.first_name }}<br>
+      {{ form.last_name.label_tag }}  {{ form.last_name }}<br>
+      {{ form.plate.label_tag }}      {{ form.plate }}<br>
+      {{ form.phone.label_tag }}      {{ form.phone }}<br>
+      {{ form.quantity.label_tag }}   {{ form.quantity }}<br><br>
+      <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
+      <a href="{% url 'tire_list' %}" class="btn btn-secondary">Volver</a>
+      {% if form.non_field_errors %}
+        <div class="error">{{ form.non_field_errors }}</div>
+      {% endif %}
+      {% if form.quantity.errors %}
+        <div class="error">{{ form.quantity.errors }}</div>
+      {% endif %}
+    </form>
+  </main>
+</body>
+</html>
