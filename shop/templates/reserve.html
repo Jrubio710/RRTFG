@@ -1,33 +1,52 @@
+<!-- shop/templates/reserve.html -->
+```html
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reservar {{ tire.brand }} {{ tire.model }}</title>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Confirmar Reserva | RubioRoad</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <header>
-    <h1>Reservar {{ tire.brand }} {{ tire.model }}</h1>
-  </header>
-  <main>
-    <form method="post">
+<body class="bg-gradient-to-br from-black via-gray-900 to-orange-600 flex items-center justify-center min-h-screen">
+  <div class="w-full max-w-md bg-white bg-opacity-20 backdrop-blur-md rounded-2xl shadow-xl p-8">
+    <h2 class="text-3xl font-extrabold text-white text-center mb-6">Reservar {{ tire.brand }} {{ tire.model }}</h2>
+    <form method="post" class="space-y-4">
       {% csrf_token %}
-      {{ form.first_name.label_tag }} {{ form.first_name }}<br>
-      {{ form.last_name.label_tag }}  {{ form.last_name }}<br>
-      {{ form.plate.label_tag }}      {{ form.plate }}<br>
-      {{ form.phone.label_tag }}      {{ form.phone }}<br>
-      {{ form.quantity.label_tag }}   {{ form.quantity }}<br><br>
-      <button type="submit" class="btn btn-primary">Confirmar Reserva</button>
-      <a href="{% url 'tire_list' %}" class="btn btn-secondary">Volver</a>
+      <div>
+        <label class="block text-sm font-medium text-white">Nombre</label>
+        {{ form.first_name }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-white">Apellido</label>
+        {{ form.last_name }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-white">Matrícula</label>
+        {{ form.plate }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-white">Teléfono</label>
+        {{ form.phone }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-white">Cantidad</label>
+        {{ form.quantity }}
+      </div>
       {% if form.non_field_errors %}
-        <div class="error">{{ form.non_field_errors }}</div>
+      <div class="text-orange-300 text-sm">{{ form.non_field_errors }}</div>
       {% endif %}
-      {% if form.quantity.errors %}
-        <div class="error">{{ form.quantity.errors }}</div>
-      {% endif %}
+      {% for field in form %}
+      {% for error in field.errors %}
+      <div class="text-orange-300 text-sm">{{ error }}</div>
+      {% endfor %}
+      {% endfor %}
+      <div class="flex justify-between mt-6">
+        <a href="{% url 'tire_list' %}" class="px-6 py-2 bg-black bg-opacity-70 text-white rounded-full hover:bg-opacity-90 transition">Cancelar</a>
+        <button type="submit" class="px-6 py-2 bg-orange-500 bg-opacity-90 text-white rounded-full hover:bg-opacity-100 transition">Confirmar Reserva</button>
+      </div>
     </form>
-  </main>
+  </div>
 </body>
 </html>

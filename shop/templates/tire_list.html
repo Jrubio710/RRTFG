@@ -1,74 +1,62 @@
+<!-- shop/templates/tire_list.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Ruedas en Stock</title>
-    <style>
-        table {
-            width: 80%;
-            margin: auto;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        h1 {
-            text-align: center;
-        }
-        
-        .btn-reserve {
-            display: inline-block;
-            padding: 6px 12px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        .btn-reserve:hover {
-            background-color: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ruedas en Stock | RubioRoad</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Espacio vertical entre filas */
+    .table-spaced {
+      border-collapse: separate;
+      border-spacing: 0 1rem;
+    }
+  </style>
 </head>
-<body>
-    <h1>Ruedas Disponibles</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Dimensiones</th>
-                <th>Precio (€)</th>
-                <th>Stock</th>
-                <th>Reservar</th>
-            </tr>
+<body class="bg-gradient-to-br from-black via-gray-900 to-black 700 min-h-screen">
+  <div class="container mx-auto p-6">
+    <h1 class="text-5xl font-extrabold text-white text-center mb-10">
+      Ruedas Disponibles
+    </h1>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-xl table-spaced">
+        <thead class="bg-black bg-opacity-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-orange-300 uppercase">Marca</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-orange-300 uppercase">Modelo</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-orange-300 uppercase">Dimensiones</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-orange-300 uppercase">Precio (€)</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-orange-300 uppercase">Stock</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-orange-300 uppercase">Acción</th>
+          </tr>
         </thead>
         <tbody>
-            {% for tire in tires %}
-            <tr>
-                <td>{{ tire.brand }}</td>
-                <td>{{ tire.model }}</td>
-                <td>{{ tire.dimensions }}</td>
-                <td>{{ tire.price }}</td>
-                <td>{{ tire.stock }}</td>
-                <td>
-                    {% if tire.stock > 0 %}
-                    <a href="{% url 'reserve_tire' tire.id %}" class="btn-reserve">Reservar</a>
-                    {% else %}
-                    Sin stock
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">No hay ruedas disponibles en stock.</td>
-            </tr>
-            {% endfor %}
+          {% for tire in tires %}
+          <tr class="bg-white bg-opacity-40 hover:bg-opacity-40 transition rounded-lg">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ tire.brand }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ tire.model }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ tire.dimensions }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-center">€{{ tire.price }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-white text-center">{{ tire.stock }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+              {% if tire.stock > 0 %}
+                <a href="{% url 'reserve_tire' tire.id %}" class="inline-block px-5 py-2 bg-orange-500 bg-opacity-120 text-white font-medium rounded-full hover:bg-opacity-100 transition transform hover:scale-105">
+                  Reservar
+                </a>
+              {% else %}
+                <span class="text-gray-400">Sin stock</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-6 text-center text-gray-200">No hay ruedas disponibles en stock.</td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
+      </table>
+    </div>
+  </div>
 </body>
 </html>
